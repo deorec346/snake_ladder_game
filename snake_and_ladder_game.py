@@ -31,8 +31,15 @@ class board():
             new_pos = self.Ladders[new_pos]
         self.n_players[player_i] = new_pos
 
+    def move_players(self):
+        for player_i in range(self.players):
+            self.move_player(player_i)
+            if self.winner is not None:
+                break
+
 
 if __name__ == "__main__":
     game = board(4, True)
     print(game.die_roll())
-    print(game.move_player("player_i"))
+    print(game.move_players())
+    print(game.move_players())

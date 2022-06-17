@@ -31,28 +31,8 @@ class board():
             new_pos = self.Ladders[new_pos]
         self.n_players[player_i] = new_pos
 
-    def move_players(self):
-        for player_i in range(self.players):
-            self.move_player(player_i)
-            if self.winner is not None:
-                break
-
-    def print_turn(self):
-        print(f" Turn {self.turn}:")
-
-        # print players with position
-        player_pos = " | ".join([f" ({player_i + 1}) at {pos}" for player_i, pos in enumerate(self.n_players)])
-        print(player_pos)
-
-    def play(self):
-        while self.winner is None:
-            self.turn += 1
-            self.move_players()
-            if self.verbose:
-                self.print_turn()
-        return f" Player {self.winner } is won"
-
+    
 
 if __name__ == "__main__":
     game = board(4, True)
-    print(game.play())
+    print(game.move_player())

@@ -1,63 +1,58 @@
 import random
 
-ladder = {
-    1: 38,
-    4: 14,
-    9: 31,
-    21: 42,
-    28: 84,
-    51: 67,
-    72: 91,
-    80: 99
-}
 
-# Snake : Jump down
-snake = {
-    17: 7,
-    30: 2,
-    54: 34,
-    62: 19,
-    64: 60,
-    72: 55,
-    87: 36,
-    93: 73,
-    95: 75,
-    98: 79
-}
+class board():
+    Snakes = {27: 8, 34: 7, 29: 3, 69: 31, 72: 36, 77: 46}
+    Ladders = {4: 16, 6: 25, 12: 49, 30: 60, 38: 88, 58: 62}
 
-position1 = 0
-position2 = 0
+    def __init__(self, players, verbose=False):
+        self.players = players
+        self.n_players = [0] * players
+        self.turn = 0
+        self.verbose = verbose
+        self.winner = None
+        self.last_pos = 100
+
+    def die_roll(self):
+        return random.randrange(1, 6)
+
+    def move_player(self, player_i):
+        prev_pos = self.n_players[player_i]
+        new_pos = prev_pos + self.die_roll()
+
+        if new_pos == self.last_pos:
+            self.winner = player_i
+            new_pos = self.last_pos
+        elif new_pos > self.last_pos:
+            new_pos = prev_pos
+        elif new_pos in self.Snakes:
+            new_pos = self.Snakes[new_pos]
+        elif new_pos in self.Ladders:
+            new_pos = self.Ladders[new_pos]
+        self.n_players[player_i] = new_pos
+
+    def move_players(self):
+        for player_i in range(self.players):
+            self.move_player(player_i)
+            if self.winner is not None:
+                break
+
+    def print_turn(self):
+        print(f" Turn {self.turn}:")
+
+        # print players with position
+        player_pos = " | ".join([f" ({player_i + 1}) at {pos}" for player_i, pos in enumerate(self.n_players)])
+        print(player_pos)
+
+    def play(self):
+        while self.winner is None:
+            self.turn += 1
+            self.move_players()
+            if self.verbose:
+                self.print_turn()
+        return f" Player {self.winner } is won"
 
 
-def move(pos):
-    dice = random.randint(1, 6)
-    print(f"Dice:{dice}")
-    pos = int(pos + dice)
-    if pos in snake:
-        print("Bitten by snake")
-        pos = snake[pos]
-        print(f"Position:{pos}")
-        print("\n")
-    if pos in ladder:
-        print("Climbed ladder")
-        pos = ladder[pos]
-        print(f"Position:{pos}")
-        print("\n")
-    else:
-        print(f"Position:{pos}")
-        print("\n")
-    return pos
-
-
-while True:
-    player1 = input("Player 1 press Enter ")
-    position1 = move(position1)
-    if position1 == 100:
-        print("Game Over!!! \nPlayer 1 wins")
-        break
-
-    player2 = input("Player 2 press Enter ")
-    position2 = move(position2)
-    if position2 == 100:
-        print("Game Over!!! \nPlayer 2 wins")
-        break
+if __name__ == "__main__":
+    game = board(4, True)
+    print(game.play())
